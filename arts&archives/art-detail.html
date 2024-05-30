@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Detail</title>
+    <link rel="stylesheet" href="css/art-detail.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+</head>
+
+<header id="stickyHeader" class="sticky" style="background-color: #AAAAAA;">
+    <div class="logo">
+        <a href="index.html"><img src="asset/logo.jpg" alt="Arts and Archives"></a>
+    </div>
+    <ul class="nav_links">
+        <li class="wat"><a href="watch.html" style="color: white; font-weight: bold; margin-left: 10px;">Watch</a></li>
+        <li class="ex"><a href="explore.html" style="color: white; font-weight: bold; margin-left: 10px;">Explore</a></li>
+    </ul>
+    <div class="profile">
+        <a href="creator.html" id="accountName">
+            <script>
+                document.getElementById('accountName').textContent = localStorage.getItem('accountName') || 'Guest';
+            </script>
+        </a>
+    </div>
+</header>
+<body>
+
+    
+    <div class="art-detail-container">
+        <h1 id="artTitle"></h1> <!-- Title -->
+        <h3 id="artBy"></h3> <!-- Author -->
+
+        <!-- Grid container -->
+        <div class="grid-container">
+            <!-- Image Column -->
+            <div class="grid-item image-column">
+                <img id="artImage" src="#" alt="Art Image" style="width:100%;">
+            </div>
+
+            <!-- Materials and Steps Column -->
+            <div class="grid-item materials-steps-column">
+                <!-- Dynamic Materials List -->
+                <div class="materials-list">
+                    <h2>Materials</h2>
+                    <ul id="materialsList"></ul>
+                </div>
+                <br><br>
+                <!-- Steps Section -->
+                <div class="steps-section">
+                    <h2>Steps</h2>
+                    <ol id="artSteps"></ol>
+                </div>
+            </div>
+            <!-- Notes and Materials Column -->
+            <div class="grid-item notes-materials-column">
+                <!-- Checklist of Materials -->
+                <div class="materials-checklist">
+                    <h2>Checklist</h2>
+                    <ul id="materialsChecklist"></ul>
+                </div>
+                <!-- Notes Section -->
+                <textarea id="notes" placeholder="Your notes here..." class="editable-notes"></textarea>
+            </div>
+        </div>
+        
+        <!-- Description and Resources -->
+        
+        <div class="description-resources">
+            <h2>Description</h2>
+            <p id="artDescription"></p>
+            <div class="resources-section">
+                <br><br>
+                <h2>Resources</h2>
+                <ul id="artResources"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/art-detail.js"></script>
+</body>
+<script>
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const index = urlParams.get('index');
+        const artPieces = JSON.parse(localStorage.getItem('artPieces')) || [];
+        const artPiece = artPieces[index];
+
+        // Set dynamic content
+        document.getElementById('artTitle').innerText = artPiece.title;
+        document.getElementById('artBy').innerText = `By ${artPiece.creatorName}`; // Changed from artPiece.creator to artPiece.creatorName
+        document.getElementById('artImage').src = artPiece.imgData;
+        document.getElementById('artDescription').innerText = artPiece.description;
+
+        // Populate steps as numbered list
+        const stepsList = document.getElementById('artSteps');
+        artPiece.steps.forEach((step, index) => {
+            const li = document.createElement('li');
+            li.textContent = step;
+            stepsList.appendChild(li);
+        });
+
+        // Populate materials
+        const materialsList = document.getElementById('materialsList');
+        const checklist = document.getElementById('materialsChecklist');
+        artPiece.materials.forEach(material => {
+            const li = document.createElement('li');
+            li.textContent = material;
+            materialsList.appendChild(li);
+
+            // Also add to the checklist in the notes section
+            const checklistItem = document.createElement('li');
+            checklistItem.innerHTML = `<input type="checkbox" onclick="toggleMaterialStyle(this)"> ${material}`;
+            checklist.appendChild(checklistItem);
+        });
+
+        const resourcesList = document.getElementById('artResources');
+        artPiece.resources.forEach(resource => {
+            const li = document.createElement('li');
+            li.innerHTML = `<a href="${resource}" target="_blank">${resource}</a>`;
+            resourcesList.appendChild(li);
+        });
+    };
+
+    function toggleMaterialStyle(checkbox) {
+        const style = checkbox.checked ? 'line-through' : 'none';
+        const color = checkbox.checked ? 'gray' : 'black';
+        checkbox.nextSibling.style.textDecoration = style;
+        checkbox.nextSibling.style.color = color;
+    }
+</script>
+</body>
+</html>

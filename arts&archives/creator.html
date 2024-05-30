@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Projects</title>
+    <link rel="stylesheet" href="css/creator.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <script src="js/updateHeader.js"></script>
+</head>
+
+<header id="stickyHeader" class="sticky" style="background-color: #AAAAAA;">
+    <div class="logo">
+        <a href="index.html"><img src="asset/logo.jpg" alt="Arts and Archives"></a>
+    </div>
+    <ul class="nav_links">
+        <li class="wat"><a href="watch.html">Watch</a></li>
+        <li class="ex"><a href="explore.html">Explore</a></li>
+    </ul>
+    <div class="profile">
+        <a href="landing_page.html" onclick="logout()">
+            Log Out
+        </a>
+    </div>
+</header>
+
+
+<body>    
+    
+    <div class="project-container animate__animated animate__fadeIn">
+        <div class="project-gallery animate__animated animate__fadeIn">
+            <h1>My Art Projects</h1>
+            <div id="project-gallery"></div>
+            <div id="no-art-message" style="display: none; margin-left: 50px;">No uploaded artwork.</div>
+            <div id="project-gallery" class="initial-add-container">
+                <div class="add-card">
+                    <a href="create-project.html" class="create-link">
+                        <button><i class="fas fa-plus"></i></button>
+                        <h4>Add New</h4>
+                    </a>
+                </div>
+
+            </div>
+
+    <!-- The Modal -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalTitle"></h2><br>
+        <h4 id="modalCreator"></h4>
+        <img id="modalImage" src="#" alt="Art Image" style="width:100%;">
+        <br><br>
+        <p><strong>Materials: <br></strong> <span id="modalMaterials"></span></p><br>
+        <p><strong>Steps: <br></strong> <span id="modalSteps"></span></p><br>
+        <p><strong>Description: <br></strong> <span id="modalDescription"></span></p><br>
+        <p><strong>Resources: <br></strong> <span id="modalResources"></span></p>
+        <br><br>
+        <div class="modal-footer">
+            <button id="deleteButton" onclick="deleteArtPiece()" class="deleteButton">Delete</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    
+    window.onload = function() {
+        displayArtPieces();
+    };
+
+    function displayArtPieces() {
+        const container = document.getElementById('project-gallery');
+        const artPieces = JSON.parse(localStorage.getItem('artPieces')) || [];
+
+        if (artPieces.length === 0) {
+            document.getElementById('no-art-message').style.display = 'block';
+        } else {
+            artPieces.forEach((art, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <h2>${art.title}</h2>
+                    <h4>By: ${art.creatorName}</h4>
+                    <img src="${art.imgData}" alt="Art Image" style="width:100%;" onclick="displayArtPieceDetail(${index})">
+                `;
+                container.appendChild(card);
+            });
+        }
+    }
+
+    function deleteArtPiece(index) {
+        const artPieces = JSON.parse(localStorage.getItem('artPieces')) || [];
+        artPieces.splice(index, 1); // Remove the art piece from the array
+        localStorage.setItem('artPieces', JSON.stringify(artPieces)); // Update local storage
+
+        // Remove the card element directly from the DOM
+        const container = document.getElementById('project-gallery');
+        const cardToRemove = container.children[index]; // Get the specific card to remove
+        if (cardToRemove) {
+            container.removeChild(cardToRemove);
+        }
+
+        // Optionally, check if there are no more art pieces and show the no-art message
+        if (artPieces.length === 0) {
+            document.getElementById('no-art-message').style.display = 'block';
+            container.innerHTML = ''; // Clear the container if no art pieces are left
+        }
+    }
+
+    function displayArtPieceDetail(index) {
+        const artPiece = JSON.parse(localStorage.getItem('artPieces'))[index];
+        const modal = document.getElementById('myModal');
+        const modalImg = document.getElementById('modalImage');
+        const span = document.getElementsByClassName("close")[0];
+
+        // Set the content of the modal
+        document.getElementById('modalTitle').innerText = artPiece.title;
+        modalImg.src = artPiece.imgData;
+        modalImg.alt = `${artPiece.title} by ${artPiece.creatorName}`;
+        document.getElementById('modalCreator').innerText = `By:  ${artPiece.creatorName}`;
+        document.getElementById('modalDescription').innerText = artPiece.description;
+        document.getElementById('modalMaterials').innerText = artPiece.materials.join(', ');
+        document.getElementById('modalSteps').innerText = artPiece.steps.join(', ');
+
+        // Clear previous resources and add new ones
+        const resourcesList = document.getElementById('modalResources');
+        resourcesList.innerHTML = '';
+        artPiece.resources.forEach(url => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = url;
+            a.target = '_blank';
+            a.innerText = url;
+            li.appendChild(a);
+            resourcesList.appendChild(li);
+        });
+
+        // Display the modal
+        modal.style.display = "block";
+
+        // Close the modal on clicking the close button
+        span.onclick = function() {
+            modal.style.display = "none";
+        };
+
+        // Close the modal on clicking outside of it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        document.getElementById('deleteButton').onclick = function() {
+            deleteArtPiece(index);
+            modal.style.display = "none";
+        };
+    }
+</script>
+
+</body>
+</html>
+
