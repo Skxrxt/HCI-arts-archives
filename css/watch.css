@@ -1,0 +1,192 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+body{
+        background-color: #F0EBE3;
+
+}
+header {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.logo {
+    position: absolute;
+    left: 10px;
+}
+
+.logo img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    vertical-align: middle;
+    margin-left: 30px;
+}
+
+.nav_links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    margin-left: 150px;
+    margin-bottom: 30px;
+}
+
+.sticky {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+a {
+    text-decoration: none;
+    font-size:25px;
+}
+
+.header-content {
+    margin-top: -120px;
+}
+
+.left a {
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.nav_links li:first-child {
+    margin-right: auto;
+    margin-left: 5px;
+}
+
+.nav_links li {
+    margin-left: 80px;
+    padding-top: 30px;
+}
+
+.nav_links .right {
+    margin-left: 40px;
+}
+
+.nav_links .right_1 {
+    margin-left: 735px;
+}
+
+.stick2one > li {
+    list-style: none;
+    cursor: pointer;
+    padding: 1%;
+}
+
+.nav {
+    display: block;
+}
+
+.nav > li:hover {
+    color: red;
+}
+
+.nav > li {
+    list-style: none;
+    cursor: pointer;
+    padding: 1%;
+}
+
+.nav > li:nth-child(2),
+.nav > li:nth-child(3) {
+    font-weight: 600;
+}
+
+.nav > li:nth-child(6):hover {
+    color: red;
+}
+
+
+.profile{
+    float: right;
+    right: 30px; 
+    margin-right: 40px;
+    font-weight: bold;
+
+}
+
+.profile a{
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.profile a:hover{
+    color: #FFC069;
+}
+
+@media screen and (max-width: 600px) {
+    .search {
+        width: 90%;
+    }
+
+    .search > input {
+        height: 30px;
+    }
+}
+
+
+.vidcontainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+}
+
+.vidcard {
+    overflow: hidden;
+    text-align: center;
+}
+
+.vidcard iframe {
+    width: 100%;
+    height: 200px;
+    display: block;
+}
+
+.vidcard_size {
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+}
+
+.description {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #333;
+}
+
+@media (max-width: 700px) {
+    .vidcard_size {
+        width: 100%;
+        height: auto;
+    }
+}
+
+.nav_links a {
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 10px;
+}
+
+.nav_links a:hover {
+    color: #FFC069;
+}
+
+.nav_links .selected a {
+    color: purple;
+}

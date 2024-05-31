@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up Page</title>
+    <link rel="stylesheet" href="css/signup.css">
+</head>
+<body>
+    <div class="login-container">
+        <form id="registerForm">
+            <h2>Register</h2>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            <label for="repeat-password">Repeat Password</label>
+            <input type="password" id="repeat-password" name="repeat-password" required>
+            <button type="button" onclick="register()" class="login-btn">Register</button>
+            <a href="index.html" class="create-account-btn">Cancel</a>
+        </form>
+    </div>
+    <script>
+        function register() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const repeatPassword = document.getElementById('repeat-password').value;
+
+            if (password !== repeatPassword) {
+                alert('Passwords do not match.');
+                return;
+            }
+
+            // Save credentials to local storage
+            localStorage.setItem('accountName', username); // Changed key to 'accountName'
+            localStorage.setItem('registeredPassword', password);
+
+            alert('Registration successful!');
+            window.location.href = 'index.html'; // Redirect to login page
+        }
+    </script>
+</body>
+</html>

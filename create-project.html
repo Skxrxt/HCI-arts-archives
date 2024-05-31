@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" con
+    tent="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Art Piece</title>
+    <link rel="stylesheet" href="css/create-project.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+</head>
+<header id="stickyHeader" class="sticky" style="background-color: #AAAAAA;">
+    <div class="logo">
+        <a href="index.html"><img src="asset/logo.jpg" alt="Arts and Archives"></a>
+    </div>
+    <ul class="nav_links">
+        <li class="wat"><a href="watch.html">Watch</a></li>
+        <li class="ex"><a href="explore.html">Explore</a></li>
+    </ul>
+    <div class="profile">
+        <a href="creator.html" id="accountName">
+            <script>
+                document.getElementById('accountName').textContent = localStorage.getItem('accountName') || 'Guest';
+            </script>
+        </a>
+    </div>
+</header>
+
+
+<body>
+
+
+
+    <h1>New Project</h1>
+
+<div class="main-container animate__animated animate__fadeIn">
+    <div class="upload-form">
+
+        <div>Title</div>
+        <input type="text" id="title" maxlength="25" required>
+        <div>Creator's Name</div>
+        <input type="text" id="creatorName" maxlength="15" required>
+        <div class>Materials</div>
+        <textarea id="materials" required></textarea>
+        <div class>Steps</div>
+        <textarea id="steps" required></textarea>
+        <div class>Description</div>
+        <textarea id="description" required></textarea>
+        <div class>Resources</div>
+        <textarea id="resources" required></textarea>
+        <input type="file" id="uploadImage" accept="image/*" onchange="previewImage();" required>
+        <img id="preview" src="#" alt="Image Preview" style="display:none;"/>
+        <button class="upload-button" onclick="uploadArtPiece()">Upload</button>
+
+    </div>
+</div>
+
+<script>
+     window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const index = urlParams.get('index');
+
+        if (index !== null) {
+            const artPieces = JSON.parse(localStorage.getItem('artPieces')) || [];
+            const artPiece = artPieces[index];
+
+            if (artPiece) {
+                // Populate form fields with the art piece data
+                document.getElementById('title').value = artPiece.title;
+                document.getElementById('creatorName').value = artPiece.creatorName;
+                document.getElementById('description').value = artPiece.description;
+                document.getElementById('materials').value = artPiece.materials.join(', ');
+                document.getElementById('steps').value = artPiece.steps.join(', ');
+                document.getElementById('resources').value = artPiece.resources.join(', ');
+                // Optionally, set the preview image if imgData exists
+                if (artPiece.imgData) {
+                    document.getElementById('preview').src = artPiece.imgData;
+                    document.getElementById('preview').style.display = 'block';
+                }
+            }
+        }
+
+        document.getElementById('uploadForm').onsubmit = function(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('title').value;
+            const creatorName = document.getElementById('creatorName').value;
+            const description = document.getElementById('description').value;
+            const materials = document.getElementById('materials').value.split(',').map(item => item.trim());
+            const steps = document.getElementById('steps').value.split(',').map(item => item.trim());
+            const resources = document.getElementById('resources').value.split(',').map(url => url.trim());
+            const imageFile = document.getElementById('uploadImage').files[0];
+
+            const artPiece = {
+                title,
+                creatorName,
+                description,
+                materials,
+                steps,
+                resources,
+                imgData: imageFile ? URL.createObjectURL(imageFile) : (artPieces[index] ? artPieces[index].imgData : '') // Preserve existing image or set to empty string if no new image uploaded
+            };
+
+            if (index !== null) {
+                // Update existing art piece data
+                artPieces[index] = artPiece;
+            } else {
+                // Add new art piece data
+                artPieces.push(artPiece);
+            }
+
+            localStorage.setItem('artPieces', JSON.stringify(artPieces));
+            alert('Art piece ' + (index !== null ? 'updated' : 'uploaded') + ' successfully!');
+            window.location.href = 'creator.html'; // Redirect to the creator page
+        };
+    }
+
+
+document.addEventListener('input', function (e) {
+            if (e.target.tagName.toLowerCase() === 'textarea') {
+                e.target.style.height = 'auto';
+                e.target.style.height = e.target.scrollHeight + 'px';
+            }
+        });
+
+function uploadArtPiece() {
+    const title = document.getElementById('title').value;
+    const creatorName = document.getElementById('creatorName').value;
+    const materials = document.getElementById('materials').value.split(',');
+    const steps = document.getElementById('steps').value.split(',');
+    const description = document.getElementById('description').value;
+    const resources = document.getElementById('resources').value.split(',').map(url => url.trim());
+    const imageFile = document.getElementById('uploadImage').files[0];
+
+    if (imageFile) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const imgData = event.target.result;
+            const artPiece = {
+                title,
+                creatorName,
+                materials,
+                steps,
+                description,
+                resources,
+                imgData
+            };
+            saveArtPieceToLocalStorage(artPiece);
+        };
+        reader.readAsDataURL(imageFile);
+    } else {
+        alert('Please upload an image for the art piece.');
+    }
+}
+
+function saveArtPieceToLocalStorage(artPiece) {
+    let artPieces = localStorage.getItem('artPieces');
+    artPieces = artPieces ? JSON.parse(artPieces) : [];
+    artPieces.push(artPiece);
+    localStorage.setItem('artPieces', JSON.stringify(artPieces));
+    alert('Art piece uploaded successfully!');
+    window.location.href = 'creator.html'; // Redirect to the creator page
+}
+
+function previewImage() {
+    var file = document.getElementById("uploadImage").files;
+    if (file.length > 0) {
+        var fileReader = new FileReader();
+
+        fileReader.onload = function (event) {
+            var img = new Image();
+            img.src = event.target.result;
+
+            img.onload = function () {
+                var MAX_WIDTH_PERCENTAGE = 0.9; // 90% of the upload form width
+                var uploadForm = document.querySelector(".upload-form");
+                var uploadFormWidth = uploadForm.offsetWidth;
+                var maxWidth = uploadFormWidth * MAX_WIDTH_PERCENTAGE;
+
+                var width = img.width;
+                var height = img.height;
+
+                // Calculate dimensions while maintaining aspect ratio
+                if (width > maxWidth) {
+                    var ratio = maxWidth / width;
+                    width = maxWidth;
+                    height *= ratio;
+                }
+
+                var previewImg = document.getElementById("preview");
+                previewImg.style.width = '100%'; // Ensure image takes up full width of its container
+                previewImg.style.maxWidth = maxWidth + 'px'; // Limit maximum width
+
+                previewImg.setAttribute("src", event.target.result);
+                previewImg.style.display = "block";
+            };
+        };
+
+        fileReader.readAsDataURL(file[0]);
+    }
+}
+
+
+</script>
+</body>
+</html>
+
